@@ -1,5 +1,4 @@
 import { Outlet } from "react-router";
-import Button from "./Button";
 
 export default function PatientForm() {
   return (

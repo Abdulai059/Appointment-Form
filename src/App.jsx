@@ -8,6 +8,7 @@ import HealthInsurance from "./components/HealthInsurance/InsuranceInfo";
 import BillingInfo from "./components/BillingInfo";
 import CommunicationInfo from "./components/ CommunicationInfo";
 import PatientDataPreview from "./components/PatientDataPreview";
+import BookingConfirmation from "./components/BookingConfirmation";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,11 @@ export default function App() {
               <Route path="billing" element={<BillingInfo />} />
               <Route path="preview" element={<PatientDataPreview />} />
             </Route>
+
+            <Route
+              path="/booking-confirmation"
+              element={<BookingConfirmation />}
+            />
 
             <Route path="*" element={<div>Page not found</div>} />
           </Routes>

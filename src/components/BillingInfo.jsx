@@ -199,7 +199,6 @@ export default function BillingInformation() {
             <Button
               onClose={handleBack}
               onSubmit={handleSubmit(handleFinalSubmit)}
-              variant="submit"
             />
           </form>
         </div>

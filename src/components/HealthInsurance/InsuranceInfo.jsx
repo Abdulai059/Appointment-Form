@@ -44,7 +44,7 @@ export default function HealthInsurance() {
   const isInsured = insurance && insurance !== "UN-INSURED";
 
   const onSubmit = (data) => {
-    updateSection("healthInsurance", data);
+    updateSection("healthInsuranceInfo", data);
     navigate("/patient/billing");
   };
 
