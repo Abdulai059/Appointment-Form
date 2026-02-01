@@ -1,120 +1,26 @@
+// src/service/addBooking.js
 import supabase from "./supabase";
 
-export async function addPatientBooking(patient) {
-  // Destructure patient data with defaults
-  const {
-    registrationDate = null,
-    recordNo = "",
-    surname = "",
-    otherNames = "",
-    dateOfBirth = null,
-    ageInYears = null,
-    gender = "",
-    maritalStatus = "",
-    occupation = "",
-    religion = "",
-    educationalLevel = "",
-    postalAddress = "",
-    emailAddress = "",
-    homeAddress = "",
-    nameOfNearestRelative = "",
-    locationTown = "",
-    mobileNoOfNearestRelative = "",
-    mobileNumber = "",
-    insurance = "UN-INSURED",
-    insuranceNumber = "",
-    insuranceSerialNumber = "",
-    expiringDate = null,
-    insuranceScheme = "",
-    district = "",
-    subDistrict = "",
-    dependant = false,
-    coPayer = "",
-    insStaffDependantNo = "",
-    staffDependantName = "",
-    expiryDate = null,
-    scheme = "",
-    company = "",
-    insurancePlan = "",
-    isDependant = false,
-    dependFirstName = "",
-    dependOtherName = "",
-    dependInsuranceNumber = "",
-    paymentMethod = "",
-    paymentResponsibility = "",
-    billingAddress = "",
-    billingCity = "",
-    billingRegion = "",
-    billingPostalCode = "",
-    billingPhone = "",
-    billingEmail = "",
-    emergencyBillingContact = "",
-    emergencyBillingPhone = "",
-    specialInstructions = "",
-  } = patient;
+/**
+ * Adds a patient booking to Supabase.
+ *
+ * @param {Object} patient - Patient booking data
+ * @returns {Object} - Inserted booking data from Supabase
+ */
 
-  // Insert into Supabase
+export async function addBooking(patient) {
+  // Add booking to Supabase
   const { data, error } = await supabase
     .from("bookings")
-    .insert([
-      {
-        registrationDate,
-        recordNo,
-        surname,
-        otherNames,
-        dateOfBirth,
-        ageInYears,
-        gender,
-        maritalStatus,
-        occupation,
-        religion,
-        educationalLevel,
-        postalAddress,
-        emailAddress,
-        homeAddress,
-        nameOfNearestRelative,
-        locationTown,
-        mobileNoOfNearestRelative,
-        mobileNumber,
-        insurance,
-        insuranceNumber,
-        insuranceSerialNumber,
-        expiringDate,
-        insuranceScheme,
-        district,
-        subDistrict,
-        dependant,
-        coPayer,
-        insStaffDependantNo,
-        staffDependantName,
-        expiryDate,
-        scheme,
-        company,
-        insurancePlan,
-        isDependant,
-        dependFirstName,
-        dependOtherName,
-        dependInsuranceNumber,
-        paymentMethod,
-        paymentResponsibility,
-        billingAddress,
-        billingCity,
-        billingRegion,
-        billingPostalCode,
-        billingPhone,
-        billingEmail,
-        emergencyBillingContact,
-        emergencyBillingPhone,
-        specialInstructions,
-      },
-    ])
+    .insert([patient])
     .select()
     .single();
 
   if (error) {
-    console.error("Insert failed for Patient Booking:", error);
-    return { error };
+    console.error("Failed to insert booking:", error.message);
+    throw error;
   }
 
-  return { data };
+  // Return the inserted booking
+  return data;
 }

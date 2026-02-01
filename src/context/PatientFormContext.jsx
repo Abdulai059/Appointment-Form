@@ -20,8 +20,17 @@ export function PatientFormProvider({ children }) {
     }));
   };
 
+  const getCombinedData = () => ({
+    ...patientData.personalInfo,
+    ...patientData.communicationInfo,
+    ...patientData.healthInsuranceInfo,
+    ...patientData.billingInfo,
+  });
+
   return (
-    <PatientFormContext.Provider value={{ patientData, updateSection }}>
+    <PatientFormContext.Provider
+      value={{ patientData, updateSection, getCombinedData }}
+    >
       {children}
     </PatientFormContext.Provider>
   );

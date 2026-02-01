@@ -1,17 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addPatientBooking } from "./addBooking";
+// src/service/useAddBooking.js
+import { useMutation } from "@tanstack/react-query";
+import { addBooking } from "./addBooking";
 
 export function useAddPatientBooking() {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: addPatientBooking,
-    onSuccess: () => {
-      // Invalidate the bookings query so data refreshes
-      queryClient.invalidateQueries(["bookings"]);
+    mutationFn: addBooking,
+    onSuccess: (data) => {
+      console.log("Patient booking added successfully!", data);
     },
-    onError: (err) => {
-      console.error("Failed to add patient booking:", err);
+    onError: (error) => {
+      console.error("Failed to add patient booking:", error);
     },
   });
 }
