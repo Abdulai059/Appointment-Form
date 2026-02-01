@@ -8,6 +8,7 @@ import {
   PAYMENT_RESPONSIBILITY_OPTIONS,
 } from "../hooks/Billingutils";
 import { usePatientForm } from "../context/PatientFormContext";
+import SectionHeader from "./SectionHeader";
 
 export default function BillingInformation() {
   const navigate = useNavigate();
@@ -46,14 +47,14 @@ export default function BillingInformation() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-8 animate-fadeIn">
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
-          Billing Information
-        </h1>
-        <p className="text-slate-600 text-sm sm:text-base">
-          Select your preferred payment method for medical services
-        </p>
-      </div>
+      <SectionHeader
+        logoSrc="/logo-ling.webp"
+        logoAlt="Hospital Logo"
+        title="Billing Information"
+        subtitle="Select your preferred payment method for medical services"
+        bgColor="bg-green-50"
+        animate="animate-fadeIn"
+      />
 
       <div className="bg-white rounded shadow-sm border border-slate-200 overflow-hidden backdrop-blur-sm bg-opacity-95 animate-slideUp">
         <div className="p-6 sm:p-8 lg:p-10">

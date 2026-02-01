@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import Button from "./Button";
 import FormField from "./Input";
 import { usePatientForm } from "../context/PatientFormContext";
+import SectionHeader from "./SectionHeader";
 
 export default function CommunicationInfo() {
   const navigate = useNavigate();
@@ -35,16 +36,16 @@ export default function CommunicationInfo() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <div className="mb-8 animate-fadeIn bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
-        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
-          Communication Information
-        </h1>
-        <p className="text-slate-600 text-sm sm:text-base">
-          Please provide your contact details and emergency contact information
-        </p>
-      </div>
+      <SectionHeader
+        logoSrc="/logo-ling.webp"
+        logoAlt="Hospital Logo"
+        title="Communication Information"
+        subtitle="Please provide your contact details and emergency contact information"
+        bgColor="bg-green-50"
+        animate="animate-fadeIn"
+      />
 
-      <div className="bg-white rounded shadow-xl border border-gray-200 overflow-hidden backdrop-blur-sm bg-opacity-95 animate-slideUp">
+      <div className="bg-white rounded shadow border border-gray-200 overflow-hidden backdrop-blur-sm bg-opacity-95 animate-slideUp">
         <div className="p-6 sm:p-8 lg:p-10">
           <form
             onSubmit={handleSubmit(onSubmit)}
