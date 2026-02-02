@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { CheckCircle, Download } from "lucide-react";
+import { ArrowLeft, CheckCircle, Download } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useRef } from "react";
@@ -144,6 +144,10 @@ export default function BookingConfirmation({ onNewBooking }) {
             <button
               onClick={onNewBooking || (() => (window.location.href = "/"))}
               style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "0.5rem",
                 padding: "0.75rem",
                 fontSize: "0.875rem",
                 fontWeight: 600,
@@ -154,7 +158,8 @@ export default function BookingConfirmation({ onNewBooking }) {
                 cursor: "pointer",
               }}
             >
-              Create New Booking
+              <ArrowLeft className="w-4 h-4" />
+              Back to Bookings
             </button>
           </div>
 
@@ -168,7 +173,8 @@ export default function BookingConfirmation({ onNewBooking }) {
             }}
           >
             <p style={{ fontSize: "0.75rem", color: "#1D4ED8" }}>
-              A confirmation email has been sent to{" "}
+              Booking Successful! A confirmation email has been sent to
+              Frontdeck
               <strong>{guestData.communicationInfo?.emailAddress}</strong>
             </p>
           </div>
