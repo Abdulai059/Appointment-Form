@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router";
 import Button from "./Button";
 
@@ -23,9 +23,11 @@ export default function PersonalInfoForm() {
     handleSubmit,
     watch,
     setValue,
+    control,
     formState: { errors },
   } = useForm({
     defaultValues: {
+      patientType: "new", // 'new' or 'existing'
       registrationDate: "",
       recordNo: "",
       surname: "",
@@ -40,6 +42,7 @@ export default function PersonalInfoForm() {
     },
   });
 
+  const patientType = watch("patientType");
   const dateOfBirth = watch("dateOfBirth");
 
   useEffect(() => {
@@ -52,9 +55,7 @@ export default function PersonalInfoForm() {
     navigate("/patient/communication");
   };
 
-  const handleBack = () => {
-    navigate(-1);
-  };
+  const handleBack = () => navigate(-1);
 
   return (
     <div className="max-w-5xl mx-auto">
@@ -73,6 +74,33 @@ export default function PersonalInfoForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="space-y-6 sm:space-y-7"
           >
+            {/* Patient Type Dropdown */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <FormField
+                label="Patient Type"
+                name="patientType"
+                type="select"
+                options={[
+                  { label: "New Patient", value: "new" },
+                  { label: "Existing Patient", value: "existing" },
+                ]}
+                register={register}
+              />
+
+              {/* Conditional Record Number Input */}
+              {patientType === "existing" && (
+                <FormField
+                  label="Record Number"
+                  name="recordNo"
+                  type="text"
+                  placeholder="Enter record number"
+                  register={register}
+                  required
+                  error={errors.recordNo}
+                />
+              )}
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <FormField
                 label="Registration Date"
@@ -83,18 +111,6 @@ export default function PersonalInfoForm() {
                 error={errors.registrationDate}
               />
               <FormField
-                label="Record Number"
-                name="recordNo"
-                type="text"
-                placeholder="Enter record number"
-                register={register}
-                required
-                error={errors.recordNo}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <FormField
                 label="Surname"
                 name="surname"
                 type="text"
@@ -102,15 +118,6 @@ export default function PersonalInfoForm() {
                 register={register}
                 required
                 error={errors.surname}
-              />
-              <FormField
-                label="Marital Status"
-                name="maritalStatus"
-                type="select"
-                options={MARITAL_STATUS_OPTIONS}
-                register={register}
-                required
-                error={errors.maritalStatus}
               />
             </div>
 

@@ -12,7 +12,7 @@ function PatientDataPreviewInner({ patientData, pdfSafe }) {
 
   const renderRowTable = (title, labels, values) => (
     <section
-      className="rounded px-0 md:px-0 overflow-hidden max-w-pull mx-auto my-4"
+      className="rounded px-4 md:px-0 overflow-hidden max-w-pull mx-auto my-4"
       style={{ backgroundColor: pdfSafe ? "#F9FAFB" : "#F9FAFB" }}
     >
       <h2
@@ -167,14 +167,14 @@ function PatientDataPreviewInner({ patientData, pdfSafe }) {
           "Emergency Contact",
         ],
         [
-          patientData.billingInfo?.paymentMethod,
-          patientData.billingInfo?.paymentResponsibility,
-          patientData.billingInfo?.billingAddress,
-          patientData.billingInfo?.billingCity,
-          patientData.billingInfo?.billingRegion,
-          patientData.billingInfo?.billingPhone,
-          patientData.billingInfo?.billingEmail,
-          patientData.billingInfo?.emergencyBillingContact,
+          patientData.billingInfo?.paymentMethod || "-",
+          patientData.billingInfo?.paymentResponsibility || "-",
+          patientData.billingInfo?.billingAddress || "-",
+          patientData.billingInfo?.billingCity || "-",
+          patientData.billingInfo?.billingRegion || "-",
+          patientData.billingInfo?.billingPhone || "-",
+          patientData.billingInfo?.billingEmail || "-",
+          patientData.billingInfo?.emergencyBillingContact || "-",
         ],
       )}
     </div>
@@ -193,7 +193,7 @@ export default function PatientDataPreview({
 
   const handleBack = () => window.history.back();
 
-  // MAP function to flatten data for Supabase & EmailJS
+  // Flatten patient data
   const mapPatientToPayload = (patientData) => ({
     registrationDate: new Date().toISOString(),
     surname: patientData.personalInfo?.surname,
@@ -218,18 +218,18 @@ export default function PatientDataPreview({
     expiringDate: patientData.healthInsuranceInfo?.expiringDate,
     insuranceScheme: patientData.healthInsuranceInfo?.insuranceScheme,
 
-    paymentMethod: patientData.billingInfo?.paymentMethod,
-    paymentResponsibility: patientData.billingInfo?.paymentResponsibility,
-    billingAddress: patientData.billingInfo?.billingAddress,
-    billingCity: patientData.billingInfo?.billingCity,
-    billingRegion: patientData.billingInfo?.billingRegion,
-    billingPhone: patientData.billingInfo?.billingPhone,
-    billingEmail: patientData.billingInfo?.billingEmail,
-    emergencyBillingContact: patientData.billingInfo?.emergencyBillingContact,
+    paymentMethod: patientData.billingInfo?.paymentMethod || "",
+    paymentResponsibility: patientData.billingInfo?.paymentResponsibility || "",
+    billingAddress: patientData.billingInfo?.billingAddress || "",
+    billingCity: patientData.billingInfo?.billingCity || "",
+    billingRegion: patientData.billingInfo?.billingRegion || "",
+    billingPhone: patientData.billingInfo?.billingPhone || "",
+    billingEmail: patientData.billingInfo?.billingEmail || "",
+    emergencyBillingContact:
+      patientData.billingInfo?.emergencyBillingContact || "",
   });
 
   const sendBookingEmail = async (data) => {
-    // data is the object returned from Supabase
     const templateParams = {
       name: `${data.surname} ${data.otherNames}`,
       dob: data.dateOfBirth,
@@ -279,22 +279,27 @@ export default function PatientDataPreview({
 
   const handleSubmitAll = () => {
     const payload = mapPatientToPayload(patientData);
-
     mutate(payload, {
       onSuccess: async () => {
         await sendBookingEmail(payload);
         await generatePDF();
-        navigate("/booking-confirmation", {
-          state: { guestData: payload },
-        });
+        navigate("/booking-confirmation", { state: { guestData: payload } });
       },
     });
   };
 
   return (
     <div className="max-w-6xl mx-auto">
-      <PatientDataPreviewInner patientData={patientData} pdfSafe={false} />
+      {/* On-screen preview with billing fallback */}
+      <PatientDataPreviewInner
+        patientData={{
+          ...patientData,
+          billingInfo: patientData.billingInfo || {},
+        }}
+        pdfSafe={false}
+      />
 
+      {/* PDF hidden render */}
       <div
         ref={pdfRef}
         style={{
@@ -306,7 +311,13 @@ export default function PatientDataPreview({
           backgroundColor: "#F9FAFB",
         }}
       >
-        <PatientDataPreviewInner patientData={patientData} pdfSafe={true} />
+        <PatientDataPreviewInner
+          patientData={{
+            ...patientData,
+            billingInfo: patientData.billingInfo || {},
+          }}
+          pdfSafe={true}
+        />
       </div>
 
       <div className="flex gap-4 pt-6 px-4 md:px-0">

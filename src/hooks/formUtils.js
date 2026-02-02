@@ -6,11 +6,8 @@ export const MARITAL_STATUS_OPTIONS = [
 ];
 
 export const RELIGION_OPTIONS = [
-  { value: "christianity", label: "Christianity" },
   { value: "islam", label: "Islam" },
-  { value: "hinduism", label: "Hinduism" },
-  { value: "buddhism", label: "Buddhism" },
-  { value: "judaism", label: "Judaism" },
+  { value: "christianity", label: "Christianity" },
   { value: "other", label: "Other" },
   { value: "none", label: "Prefer not to say" },
 ];
