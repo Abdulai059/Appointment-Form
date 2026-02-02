@@ -48,7 +48,7 @@ export default function BookingConfirmation({ onNewBooking }) {
   }
 
   return (
-    <div className="min-h-screen md:py-20 py-12 px-">
+    <div className="min-h-screen md:py-20 py-12 px-4">
       {/* Offscreen div for PDF generation */}
       <div
         ref={printRef}

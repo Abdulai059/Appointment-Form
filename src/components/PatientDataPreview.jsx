@@ -185,7 +185,7 @@ export default function PatientDataPreview({
   pdfSafe = false,
   patientDataOverride,
 }) {
-  const { patientData: contextData, getCombinedData } = usePatientForm();
+  const { patientData: contextData } = usePatientForm();
   const patientData = patientDataOverride || contextData;
   const { mutate, isLoading, isError, error } = useAddPatientBooking();
   const navigate = useNavigate();
@@ -193,27 +193,66 @@ export default function PatientDataPreview({
 
   const handleBack = () => window.history.back();
 
+  // MAP function to flatten data for Supabase & EmailJS
+  const mapPatientToPayload = (patientData) => ({
+    registrationDate: new Date().toISOString(),
+    surname: patientData.personalInfo?.surname,
+    otherNames: patientData.personalInfo?.otherNames,
+    dateOfBirth: patientData.personalInfo?.dateOfBirth,
+    ageInYears: patientData.personalInfo?.ageInYears,
+    gender: patientData.personalInfo?.gender,
+    maritalStatus: patientData.personalInfo?.maritalStatus,
+    occupation: patientData.personalInfo?.occupation,
+
+    postalAddress: patientData.communicationInfo?.postalAddress,
+    emailAddress: patientData.communicationInfo?.emailAddress,
+    mobileNumber: patientData.communicationInfo?.mobileNumber,
+    nameOfNearestRelative: patientData.communicationInfo?.nameOfNearestRelative,
+    mobileNoOfNearestRelative:
+      patientData.communicationInfo?.mobileNoOfNearestRelative,
+
+    insurance: patientData.healthInsuranceInfo?.insurance,
+    insuranceNumber: patientData.healthInsuranceInfo?.insuranceNumber,
+    insuranceSerialNumber:
+      patientData.healthInsuranceInfo?.insuranceSerialNumber,
+    expiringDate: patientData.healthInsuranceInfo?.expiringDate,
+    insuranceScheme: patientData.healthInsuranceInfo?.insuranceScheme,
+
+    paymentMethod: patientData.billingInfo?.paymentMethod,
+    paymentResponsibility: patientData.billingInfo?.paymentResponsibility,
+    billingAddress: patientData.billingInfo?.billingAddress,
+    billingCity: patientData.billingInfo?.billingCity,
+    billingRegion: patientData.billingInfo?.billingRegion,
+    billingPhone: patientData.billingInfo?.billingPhone,
+    billingEmail: patientData.billingInfo?.billingEmail,
+    emergencyBillingContact: patientData.billingInfo?.emergencyBillingContact,
+  });
+
   const sendBookingEmail = async (data) => {
+    // data is the object returned from Supabase
     const templateParams = {
-      name: `${data.personalInfo?.surname || ""} ${data.personalInfo?.otherNames || ""}`,
-      dob: data.personalInfo?.dateOfBirth || "-",
-      gender: data.personalInfo?.gender || "-",
-      phone: data.communicationInfo?.mobileNumber || "-",
-      email: data.communicationInfo?.emailAddress || "-",
-      address: data.communicationInfo?.postalAddress || "-",
-      emergencyName: data.communicationInfo?.nameOfNearestRelative || "-",
-      emergencyPhone: data.communicationInfo?.mobileNoOfNearestRelative || "-",
-      paymentMethod: data.billingInfo?.paymentMethod || "-",
-      insurance: data.healthInsuranceInfo?.insurance || "-",
-      insuranceNumber: data.healthInsuranceInfo?.insuranceNumber || "-",
-      insuranceExpiry: data.healthInsuranceInfo?.expiringDate || "-",
+      name: `${data.surname} ${data.otherNames}`,
+      dob: data.dateOfBirth,
+      gender: data.gender,
+
+      phone: data.mobileNumber,
+      email: data.emailAddress,
+      address: data.postalAddress,
+
+      emergencyName: data.nameOfNearestRelative,
+      emergencyPhone: data.mobileNoOfNearestRelative,
+
+      paymentMethod: data.paymentMethod,
+      insurance: data.insurance,
+      insuranceNumber: data.insuranceNumber,
+      insuranceExpiry: data.expiringDate,
     };
 
-    await emailjs.send(
-      "service_qahdkyi",
-      "template_1jjrjzh",
+    return emailjs.send(
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
       templateParams,
-      "-60hM25v-wrJ-vuf_",
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
     );
   };
 
@@ -239,13 +278,14 @@ export default function PatientDataPreview({
   };
 
   const handleSubmitAll = () => {
-    const combinedData = getCombinedData();
-    mutate(combinedData, {
+    const payload = mapPatientToPayload(patientData);
+
+    mutate(payload, {
       onSuccess: async () => {
-        await sendBookingEmail(combinedData);
+        await sendBookingEmail(payload);
         await generatePDF();
         navigate("/booking-confirmation", {
-          state: { guestData: combinedData },
+          state: { guestData: payload },
         });
       },
     });
