@@ -1,6 +1,6 @@
 import { usePatientForm } from "../context/PatientFormContext";
 import Button from "./Button";
-import { Resend } from "resend";
+import { createCustomResend } from "../utils/resendClient";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 import html2canvas from "html2canvas";
@@ -230,18 +230,28 @@ export default function PatientDataPreview({
   });
 
   const sendBookingEmail = async (data) => {
-    const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
+    const resend = createCustomResend(import.meta.env.VITE_RESEND_API_KEY);
 
     try {
+      console.log("Sending email to:", data.emailAddress);
+      console.log("Full data object:", data);
+
+      if (!data.emailAddress) {
+        console.error("No email address found in data!");
+        throw new Error("Patient email address is required");
+      }
+
       // Render the React Email component to HTML
       const emailHtml = await render(
         <PatientConfirmation patientData={data} />,
       );
 
-      const { data: emailData, error } = await resend.emails.send({
+      const emailClient = resend.emails();
+      // For testing, send to your verified email instead of patient email
+      const { data: emailData, error } = await emailClient.send({
         from: "onboarding@resend.dev",
-        to: [data.emailAddress],
-        subject: "Appointment Confirmation",
+        to: "abdulaiosman8080@gmail.com", // Use verified email for testing
+        subject: `TEST: Appointment Confirmation for ${data.surname} ${data.otherNames}`,
         html: emailHtml,
       });
 
@@ -295,8 +305,7 @@ export default function PatientDataPreview({
       console.log("Patient confirmation email sent!");
 
       // Send doctor notification email
-      const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
-      const { render } = await import("@react-email/render");
+      const resend = createCustomResend(import.meta.env.VITE_RESEND_API_KEY);
       const DoctorNotification = (await import("../emails/DoctorNotification"))
         .default;
 
@@ -304,10 +313,11 @@ export default function PatientDataPreview({
         DoctorNotification({ patientData: payload }),
       );
 
-      const { data, error } = await resend.emails.send({
+      const doctorEmailClient = resend.emails();
+      const { data, error } = await doctorEmailClient.send({
         from: "onboarding@resend.dev",
-        to: ["abdulaiosman8080@gmail.com"],
-        subject: "New Patient Appointment Booking",
+        to: "abdulaiosman8080@gmail.com", // Send as string, not array
+        subject: "TEST: New Patient Appointment Booking",
         html: doctorHtml,
       });
 

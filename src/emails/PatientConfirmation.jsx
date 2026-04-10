@@ -1,24 +1,45 @@
-import { Button, Container, Heading, Html, Text, Section, Row, Column } from "@react-email/components";
+import {
+  Button,
+  Container,
+  Heading,
+  Html,
+  Text,
+  Section,
+  Row,
+  Column,
+} from "@react-email/components";
+import EmailHeader from "../components/EmailHeader.jsx";
 
 export default function PatientConfirmation({ patientData }) {
   return (
     <Html>
       <Container style={container}>
-        <Heading style={heading}>Appointment Confirmation</Heading>
-        
+        <EmailHeader
+          logoSrc="https://res.cloudinary.com/ltect-homes/image/upload/v1769905103/logo-ling_v5mqek.webp"
+          title="Appointment Confirmation"
+          subtitle="Please review the patient details below"
+        />
+
         <Section style={headerSection}>
-          <Text style={greeting}>Dear {patientData.surname} {patientData.otherNames},</Text>
+          <Text style={greeting}>
+            Dear {patientData.surname} {patientData.otherNames},
+          </Text>
           <Text style={text}>
-            Your appointment has been successfully booked! We're looking forward to seeing you.
+            Your appointment has been successfully booked! We're looking forward
+            to seeing you.
           </Text>
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Your Appointment Details</Heading>
+          <Heading as="h2" style={subheading}>
+            Your Appointment Details
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Patient Name:</Text>
-              <Text style={value}>{patientData.surname} {patientData.otherNames}</Text>
+              <Text style={value}>
+                {patientData.surname} {patientData.otherNames}
+              </Text>
             </Column>
           </Row>
           <Row>
@@ -50,7 +71,9 @@ export default function PatientConfirmation({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Emergency Contact</Heading>
+          <Heading as="h2" style={subheading}>
+            Emergency Contact
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Emergency Contact:</Text>
@@ -64,7 +87,9 @@ export default function PatientConfirmation({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Insurance Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Insurance Information
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Insurance Provider:</Text>
@@ -88,7 +113,9 @@ export default function PatientConfirmation({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Payment Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Payment Information
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Payment Method:</Text>
@@ -102,7 +129,9 @@ export default function PatientConfirmation({ patientData }) {
         </Section>
 
         <Section style={importantSection}>
-          <Heading as="h2" style={subheading}>Important Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Important Information
+          </Heading>
           <Text style={text}>
             <strong>Booking Date:</strong> {new Date().toLocaleDateString()}
           </Text>
@@ -110,10 +139,12 @@ export default function PatientConfirmation({ patientData }) {
             Please arrive 15 minutes before your scheduled appointment time.
           </Text>
           <Text style={text}>
-            Please bring this confirmation email and a valid ID to your appointment.
+            Please bring this confirmation email and a valid ID to your
+            appointment.
           </Text>
           <Text style={text}>
-            If you need to reschedule or cancel, please call us at least 24 hours in advance.
+            If you need to reschedule or cancel, please call us at least 24
+            hours in advance.
           </Text>
         </Section>
 
@@ -122,16 +153,16 @@ export default function PatientConfirmation({ patientData }) {
             If you have any questions, please don't hesitate to contact us:
           </Text>
           <Text style={text}>
-            <strong>Phone:</strong> +1 (555) 123-4567<br />
-            <strong>Email:</strong> info@yourhospital.com<br />
-            <strong>Address:</strong> 123 Hospital Street, Medical City, MC 12345
+            <strong>Phone:</strong> +1 (555) 123-4567
+            <br />
+            <strong>Email:</strong> info@yourhospital.com
+            <br />
+            <strong>Address:</strong> 123 Hospital Street, Medical City, MC
+            12345
           </Text>
         </Section>
 
-        <Button 
-          href="https://your-hospital.com/patient-portal" 
-          style={button}
-        >
+        <Button href="https://your-hospital.com/patient-portal" style={button}>
           Access Patient Portal
         </Button>
 
@@ -140,7 +171,8 @@ export default function PatientConfirmation({ patientData }) {
             Thank you for choosing our hospital for your healthcare needs!
           </Text>
           <Text style={footerText}>
-            Best regards,<br />
+            Best regards,
+            <br />
             The Hospital Team
           </Text>
         </Section>

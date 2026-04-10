@@ -1,11 +1,25 @@
-import { Button, Container, Heading, Html, Text, Section, Row, Column } from "@react-email/components";
+import {
+  Button,
+  Container,
+  Heading,
+  Html,
+  Text,
+  Section,
+  Row,
+  Column,
+} from "@react-email/components";
+import EmailHeader from "../components/EmailHeader.jsx";
 
 export default function DoctorNotification({ patientData }) {
   return (
     <Html>
       <Container style={container}>
-        <Heading style={heading}>New Patient Appointment Booking</Heading>
-        
+        <EmailHeader
+          logoSrc="https://res.cloudinary.com/ltect-homes/image/upload/v1769905103/logo-ling_v5mqek.webp"
+          title="New Patient Appointment Booking"
+          subtitle="Please review the patient details below"
+        />
+
         <Section style={section}>
           <Text style={text}>Dear Doctor,</Text>
           <Text style={text}>
@@ -14,11 +28,15 @@ export default function DoctorNotification({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Patient Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Patient Information
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Name:</Text>
-              <Text style={value}>{patientData.surname} {patientData.otherNames}</Text>
+              <Text style={value}>
+                {patientData.surname} {patientData.otherNames}
+              </Text>
             </Column>
           </Row>
           <Row>
@@ -50,7 +68,9 @@ export default function DoctorNotification({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Emergency Contact</Heading>
+          <Heading as="h2" style={subheading}>
+            Emergency Contact
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Name:</Text>
@@ -64,7 +84,9 @@ export default function DoctorNotification({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Insurance Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Insurance Information
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Insurance:</Text>
@@ -88,7 +110,9 @@ export default function DoctorNotification({ patientData }) {
         </Section>
 
         <Section style={section}>
-          <Heading as="h2" style={subheading}>Payment Information</Heading>
+          <Heading as="h2" style={subheading}>
+            Payment Information
+          </Heading>
           <Row>
             <Column style={column}>
               <Text style={label}>Payment Method:</Text>
@@ -106,14 +130,12 @@ export default function DoctorNotification({ patientData }) {
             Booking Date: {new Date().toLocaleDateString()}
           </Text>
           <Text style={text}>
-            Please review the patient information and prepare for the appointment.
+            Please review the patient information and prepare for the
+            appointment.
           </Text>
         </Section>
 
-        <Button 
-          href="https://your-hospital.com/admin" 
-          style={button}
-        >
+        <Button href="https://your-hospital.com/admin" style={button}>
           View Patient Details
         </Button>
       </Container>
