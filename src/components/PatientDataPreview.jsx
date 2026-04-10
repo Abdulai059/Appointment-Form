@@ -1,11 +1,12 @@
 import { usePatientForm } from "../context/PatientFormContext";
 import Button from "./Button";
-import { useAddPatientBooking } from "../service/useAddBooking";
-import emailjs from "@emailjs/browser";
+import { Resend } from "resend";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { render } from "@react-email/render";
+import PatientConfirmation from "../emails/PatientConfirmation";
 
 function PatientDataPreviewInner({ patientData, pdfSafe }) {
   const display = (value) => value || "-";
@@ -187,7 +188,6 @@ export default function PatientDataPreview({
 }) {
   const { patientData: contextData } = usePatientForm();
   const patientData = patientDataOverride || contextData;
-  const { mutate, isLoading, isError, error } = useAddPatientBooking();
   const navigate = useNavigate();
   const pdfRef = useRef(null);
 
@@ -230,30 +230,30 @@ export default function PatientDataPreview({
   });
 
   const sendBookingEmail = async (data) => {
-    const templateParams = {
-      name: `${data.surname} ${data.otherNames}`,
-      dob: data.dateOfBirth,
-      gender: data.gender,
+    const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
 
-      phone: data.mobileNumber,
-      email: data.emailAddress,
-      address: data.postalAddress,
+    try {
+      // Render the React Email component to HTML
+      const emailHtml = await render(
+        <PatientConfirmation patientData={data} />,
+      );
 
-      emergencyName: data.nameOfNearestRelative,
-      emergencyPhone: data.mobileNoOfNearestRelative,
+      const { data: emailData, error } = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: [data.emailAddress],
+        subject: "Appointment Confirmation",
+        html: emailHtml,
+      });
 
-      paymentMethod: data.paymentMethod,
-      insurance: data.insurance,
-      insuranceNumber: data.insuranceNumber,
-      insuranceExpiry: data.expiringDate,
-    };
-
-    return emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      templateParams,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
-    );
+      if (error) {
+        console.error("Error sending email:", error);
+        throw error;
+      }
+      return emailData;
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      throw error;
+    }
   };
 
   const generatePDF = async () => {
@@ -277,15 +277,55 @@ export default function PatientDataPreview({
     pdf.save("booking_confirmation.pdf");
   };
 
-  const handleSubmitAll = () => {
+  const handleSubmitAll = async () => {
+    console.log("Submit button clicked!");
+    console.log("Patient data:", patientData);
+
+    if (!patientData) {
+      console.error("No patient data available!");
+      return;
+    }
+
     const payload = mapPatientToPayload(patientData);
-    mutate(payload, {
-      onSuccess: async () => {
-        await sendBookingEmail(payload);
-        await generatePDF();
-        navigate("/booking-confirmation", { state: { guestData: payload } });
-      },
-    });
+    console.log("Payload prepared:", payload);
+
+    try {
+      // Send patient confirmation email
+      await sendBookingEmail(payload);
+      console.log("Patient confirmation email sent!");
+
+      // Send doctor notification email
+      const resend = new Resend(import.meta.env.VITE_RESEND_API_KEY);
+      const { render } = await import("@react-email/render");
+      const DoctorNotification = (await import("../emails/DoctorNotification"))
+        .default;
+
+      const doctorHtml = await render(
+        DoctorNotification({ patientData: payload }),
+      );
+
+      const { data, error } = await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: ["abdulaiosman8080@gmail.com"],
+        subject: "New Patient Appointment Booking",
+        html: doctorHtml,
+      });
+
+      if (error) {
+        console.error("Error sending doctor notification:", error);
+      } else {
+        console.log("Doctor notification sent successfully!");
+      }
+
+      // Generate PDF
+      await generatePDF();
+      console.log("PDF generated!");
+
+      // Navigate to confirmation
+      navigate("/booking-confirmation", { state: { guestData: payload } });
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
   };
 
   return (
@@ -325,15 +365,9 @@ export default function PatientDataPreview({
           onClose={handleBack}
           onSubmit={handleSubmitAll}
           variant="submit"
-          loading={isLoading}
+          loading={false}
         />
       </div>
-
-      {isError && (
-        <p className="mt-4 text-red-500 text-center">
-          Error submitting data: {error?.message}
-        </p>
-      )}
     </div>
   );
 }
