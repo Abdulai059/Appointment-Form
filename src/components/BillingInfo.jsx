@@ -38,7 +38,7 @@ export default function BillingInformation() {
     updateSection("billingInfo", data);
 
     // Navigate to preview page
-    navigate("/patient/preview");
+    navigate("/preview");
   };
 
   const handleBack = () => {

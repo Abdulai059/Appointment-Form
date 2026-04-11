@@ -45,7 +45,7 @@ export default function HealthInsurance() {
 
   const onSubmit = (data) => {
     updateSection("healthInsuranceInfo", data);
-    navigate("/patient/billing");
+    navigate("/billing");
   };
 
   const handleBack = () => {

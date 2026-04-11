@@ -2,11 +2,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import { PatientFormProvider } from "./context/PatientFormContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import PatientForm from "./components/PatientForm";
 import PersonalInfo from "./components/PersonalInfo";
-import HealthInsurance from "./components/HealthInsurance/InsuranceInfo";
+import HealthInsurance from "./components/HealthInsurance";
 import BillingInfo from "./components/BillingInfo";
-import CommunicationInfo from "./components/ CommunicationInfo";
+import CommunicationInfo from "./components/CommunicationInfo";
 import PatientDataPreview from "./components/PatientDataPreview";
 import BookingConfirmation from "./components/BookingConfirmation";
 
@@ -18,22 +17,22 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Navigate to="/patient" replace />} />
+            {/* HOME = start form directly */}
+            <Route path="/" element={<PersonalInfo />} />
 
-            <Route path="/patient" element={<PatientForm />}>
-              <Route index element={<Navigate to="personal" replace />} />
-              <Route path="personal" element={<PersonalInfo />} />
-              <Route path="communication" element={<CommunicationInfo />} />
-              <Route path="health" element={<HealthInsurance />} />
-              <Route path="billing" element={<BillingInfo />} />
-              <Route path="preview" element={<PatientDataPreview />} />
-            </Route>
+            {/* FLAT STEPS */}
+            <Route path="/communication" element={<CommunicationInfo />} />
+            <Route path="/health" element={<HealthInsurance />} />
+            <Route path="/billing" element={<BillingInfo />} />
+            <Route path="/preview" element={<PatientDataPreview />} />
 
+            {/* CONFIRMATION */}
             <Route
               path="/booking-confirmation"
               element={<BookingConfirmation />}
             />
 
+            {/* fallback */}
             <Route path="*" element={<div>Page not found</div>} />
           </Routes>
         </BrowserRouter>

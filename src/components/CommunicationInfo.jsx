@@ -27,7 +27,7 @@ export default function CommunicationInfo() {
 
   const onSubmit = (data) => {
     updateSection("communicationInfo", data);
-    navigate("/patient/health");
+    navigate("/health");
   };
 
   const handleBack = () => {

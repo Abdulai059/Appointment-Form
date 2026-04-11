@@ -52,7 +52,7 @@ export default function PersonalInfoForm() {
 
   const onSubmit = (data) => {
     updateSection("personalInfo", data);
-    navigate("/patient/communication");
+    navigate("/communication");
   };
 
   const handleBack = () => navigate(-1);
