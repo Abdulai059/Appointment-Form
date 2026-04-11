@@ -144,6 +144,14 @@ export default function DoctorNotification({ patientData }) {
 }
 
 const container = {
+  backgroundColor: "#f6fdf8",
+  padding: "20px",
+  fontFamily: "Arial, sans-serif",
+  maxWidth: "600px",
+  margin: "0 auto",
+};
+
+const introBox = {
   backgroundColor: "#ffffff",
   padding: "20px",
   fontFamily: "Arial, sans-serif",
