@@ -247,11 +247,11 @@ export default function PatientDataPreview({
       );
 
       const emailClient = resend.emails();
-      // For testing, send to your verified email instead of patient email
+      // Send to patient's actual email address
       const { data: emailData, error } = await emailClient.send({
         from: "onboarding@resend.dev",
-        to: "abdulaiosman8080@gmail.com", // Use verified email for testing
-        subject: `TEST: Appointment Confirmation for ${data.surname} ${data.otherNames}`,
+        to: data.emailAddress, // Send to patient's email
+        subject: `Appointment Confirmation - ${data.surname} ${data.otherNames}`,
         html: emailHtml,
       });
 
@@ -317,7 +317,7 @@ export default function PatientDataPreview({
       const { data, error } = await doctorEmailClient.send({
         from: "onboarding@resend.dev",
         to: "abdulaiosman8080@gmail.com", // Send as string, not array
-        subject: "TEST: New Patient Appointment Booking",
+        subject: "New Patient Appointment Booking",
         html: doctorHtml,
       });
 
